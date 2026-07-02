@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKHSS E-Attendance Portal</title>
+    <style>
+        /* Base Styling & Futuristic Background */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #062613 0%, #0b3d21 50%, #125432 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Container & Glassmorphic Card */
+        .portal-container {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* 3D Realistic Layered Header Title with Glow Hover */
+        .main-header {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            display: inline-block;
+            transform: perspective(500px) rotateX(10deg);
+            /* Crafted 3D Text Layers */
+            text-shadow: 
+                0 1px 0 #1b733d,
+                0 2px 0 #186636,
+                0 3px 0 #14552d,
+                0 4px 0 #114726,
+                0 5px 0 #0e3a1f,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25),
+                0 10px 10px rgba(0,0,0,.2),
+                0 20px 20px rgba(0,0,0,.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .main-header:hover {
+            transform: perspective(500px) rotateX(0deg) scale(1.05);
+            color: #ecf0f1;
+            /* Combines deep 3D effect with intense Neon Green Glow */
+            text-shadow: 
+                0 1px 0 #2ecc71,
+                0 2px 0 #2ecc71,
+                0 0 10px #2ecc71, 
+                0 0 25px #2ecc71, 
+                0 0 50px #2ecc71;
+        }
+
+        /* Live Clock & Date Area */
+        .time-display {
+            font-size: 1.1rem;
+            color: #a2d2a4;
+            margin-bottom: 35px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* Portal Selection Tabs */
+        .portal-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Glowing Hover Effects for Buttons & Cards */
+        .toggle-btn:hover, .action-btn:hover, .lock-btn:hover, .sec-filter-btn:hover {
+            background: #2ecc71;
+            color: #062613;
+            box-shadow: 0 0 15px #2ecc71, 0 0 30px #2ecc71;
+            border-color: #2ecc71;
+            transform: translateY(-2px);
+        }
+
+        .toggle-btn.active {
+            background: #ffffff;
+            color: #0b3d21;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Dynamic Content Sections */
+        .portal-section {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .portal-section.active-section {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms & Inputs */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #d1e7dd;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #2ecc71;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+        }
+
+        select option {
+            background: #0b3d21;
+            color: #ffffff;
+        }
+
+        .action-btn {
+            background: rgba(46, 204, 113, 0.2);
+            color: #ffffff;
+            border: 1px solid #2ecc71;
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        /* Admin Password Security Area */
+        .lock-container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .lock-btn {
+            background: #2ecc71;
+            color: #062613;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Section Filters (Green / White School Subdivisions) */
+        .section-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sec-filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 8px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sec-filter-btn.active-sec {
+            background: #2ecc71;
+            color: #062613;
+            border-color: #2ecc71;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+
+        /* Admin Layout with Class Grid */
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .class-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .class-card:hover {
+            background: rgba(46, 204, 113, 0.1);
+            border-color: #2ecc71;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+            transform: scale(1.03);
+        }
+
+        .class-card.selected-card {
+            background: rgba(46, 204, 113, 0.25);
+            border: 2px solid #2ecc71;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .class-card h3 {
+            color: #2ecc71;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .status-summary {
+            font-size: 0.85rem;
+            color: #bdc3c7;
+        }
+
+        /* Table Styling for Logs */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .filter-status-alert {
+            background: rgba(46, 204, 113, 0.15);
+            padding: 10px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a2d2a4;
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Hidden row helper */
+        .hidden-row {
+            display: none !important;
+        }
+
+        /* Status Select Fields */
+        .status-select {
+            padding: 6px 10px;
+            background: #062613;
+            border: 1px solid #2ecc71;
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: auto;
+        }
+
+        .status-select:focus {
+            box-shadow: 0 0 8px #2ecc71;
+        }
+
+        /* Signature Footer Layout */
+        .credit-footer {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+        }
+
+        .developer-name {
+            color: #2ecc71;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+            text-transform: uppercase;
+        }
+
+        .footer-quote {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            font-style: italic;
+            color: #a2d2a4;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+        <h1 class="main-header">AKHSS E-Attendance</h1>
+        <div class="time-display" id="liveClock">Loading Live Time & Date...</div>
+
+        <div class="portal-toggle">
+            <button class="toggle-btn active" onclick="switchPortal('student')">Student Portal</button>
+            <button class="toggle-btn" onclick="switchPortal('admin')">Admin Dashboard</button>
+        </div>
+
+        <main>
+            <section id="studentSection" class="portal-section active-section">
+                <form id="attendanceForm" onsubmit="handleAttendance(event)">
+                    <div class="form-group">
+                        <label for="studentName">Full Name</label>
+                        <input type="text" id="studentName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentRoll">Roll Number</label>
+                        <input type="text" id="studentRoll" placeholder="e.g., AKH-102" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentSectionSelect">School Section</label>
+                        <select id="studentSectionSelect" required>
+                            <option value="" disabled selected>Choose your section</option>
+                            <option value="Green">Green Section</option>
+                            <option value="White">White Section</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentClass">Select Class</label>
+                        <select id="studentClass" required>
+                            <option value="" disabled selected>Choose your class</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="action-btn">Mark Attendance</button>
+                </form>
+            </section>
+
+            <section id="adminAuthSection" class="portal-section">
+                <div class="lock-container">
+                    <div class="form-group">
+                        <label for="adminPassword">Enter Admin Password</label>
+                        <input type="password" id="adminPassword" placeholder="••••••••">
+                        <div class="error-msg" id="loginError">Incorrect password. hint: akhss11</div>
+                    </div>
+                    <button class="lock-btn" onclick="verifyAdminPassword()">Verify Access</button>
+                </div>
+            </section>
+
+            <section id="adminDashboardSection" class="portal-section">
+                
+                <div class="section-filters">
+                    <button class="sec-filter-btn active-sec" onclick="filterBySchoolSection('Green')">Green Section</button>
+                    <button class="sec-filter-btn" onclick="filterBySchoolSection('White')">White Section</button>
+                </div>
+
+                <div class="class-grid">
+                    <div class="class-card" id="card-8" onclick="toggleClassFilter('Class 8', 'card-8')">
+                        <h3>Class 8</h3>
+                        <p class="status-summary">Present: <span id="count8">1</span></p>
+                    </div>
+                    <div class="class-card" id="card-9" onclick="toggleClassFilter('Class 9', 'card-9')">
+                        <h3>Class 9</h3>
+                        <p class="status-summary">Present: <span id="count9">1</span></p>
+                    </div>
+                    <div class="class-card" id="card-10" onclick="toggleClassFilter('Class 10', 'card-10')">
+                        <h3>Class 10</h3>
+                        <p class="status-summary">Present: <span id="count10">0</span></p>
+                    </div>
+                    <div class="class-card" id="card-11" onclick="toggleClassFilter('1st Year', 'card-11')">
+                        <h3>1st Year</h3>
+                        <p class="status-summary">Present: <span id="count11">0</span></p>
+                    </div>
+                    <div class="class-card" id="card-12" onclick="toggleClassFilter('2nd Year', 'card-12')">
+                        <h3>2nd Year</h3>
+                        <p class="status-summary">Present: <span id="count12">0</span></p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="filter-status-alert" id="filterAlert">Showing filtered class records. Click class card again to clear filter.</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Roll No</th>
+                                <th>Class</th>
+                                <th>Section</th>
+                                <th>Time Checked</th>
+                                <th>Status Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceLogBody">
+                            <tr data-class="Class 8" data-section="Green">
+                                <td>Ali Ahmed</td>
+                                <td>AKH-805</td>
+                                <td>Class 8</td>
+                                <td>Green</td>
+                                <td>07:55 AM</td>
+                                <td>
+                                    <select class="status-select" onchange="updateMetrics('Class 8')">
+                                        <option value="Present" selected>Present</option>
+                                        <option value="Absent">Absent</option>
+                                        <option value="Leave">Leave</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr data-class="Class 9" data-section="Green">
+                                <td>Ayan Afzal</td>
+                                <td>AKH-901</td>
+                                <td>Class 9</td>
+                                <td>Green</td>
+                                <td>08:14 AM</td>
+                                <td>
+                                    <select class="status-select" onchange="updateMetrics('Class 9')">
+                                        <option value="Present" selected>Present</option>
+                                        <option value="Absent">Absent</option>
+                                        <option value="Leave">Leave</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="credit-footer">
+        Developed by <span class="developer-name">Ayan Afzal</span>
+        <span class="footer-quote">"Empowering AKHSS through digital innovation and seamless management."</span>
+    </footer>
+
+    <script>
+        let isAdminAuthenticated = false;
+        let activeSchoolSection = 'Green'; // Default active view
+        let activeClassFilter = null;     // Tracks targeted class clicked by admin
+
+        // Live Clock Tracker Functionality
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString(undefined, options);
+            const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('liveClock').textContent = `${dateStr} | ${timeStr}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Listen for the "Enter" key on the password input field
+        document.getElementById('adminPassword').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                verifyAdminPassword();  
+            }
+        });
+
+        // Portal Switch Toggle (Admin vs Student View)
+        function switchPortal(portalType) {
+            const tabs = document.querySelectorAll('.toggle-btn');
+            const sections = document.querySelectorAll('.portal-section');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            sections.forEach(sec => sec.classList.remove('active-section'));
+
+            if (portalType === 'student') {
+                tabs[0].classList.add('active');
+                document.getElementById('studentSection').classList.add('active-section');
+            } else {
+                tabs[1].classList.add('active');
+                if (isAdminAuthenticated) {
+                    document.getElementById('adminDashboardSection').classList.add('active-section');
+                    applyCombinedFilters(); 
+                } else {
+                    document.getElementById('adminAuthSection').classList.add('active-section');
+                    setTimeout(() => {
+                        document.getElementById('adminPassword').focus();
+                    }, 100);
+                }
+            }
+        }
+
+        // Verify Password Panel
+        function verifyAdminPassword() {
+            const passInput = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (passInput === 'akhss11') {
+                isAdminAuthenticated = true;
+                errorDiv.style.display = 'none';
+                document.getElementById('adminAuthSection').classList.remove('active-section');
+                document.getElementById('adminDashboardSection').classList.add('active-section');
+                document.getElementById('adminPassword').value = ''; 
+                applyCombinedFilters();
+            } else {
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Filter Dashboard via School Divisions (Green vs White)
+        function filterBySchoolSection(sectionName) {
+            activeSchoolSection = sectionName;
+            
+            const buttons = document.querySelectorAll('.sec-filter-btn');
+            buttons[0].classList.toggle('active-sec', sectionName === 'Green');
+            buttons[1].classList.toggle('active-sec', sectionName === 'White');
+            
+            clearClassSelectionUI();
+            activeClassFilter = null;
+
+            applyCombinedFilters();
+        }
+
+        // Isolate specific classes dynamically when clicking their dashboard boxes
+        function toggleClassFilter(className, cardId) {
+            const card = document.getElementById(cardId);
+            
+            if (activeClassFilter === className) {
+                card.classList.remove('selected-card');
+                activeClassFilter = null;
+            } else {
+                clearClassSelectionUI();
+                card.classList.add('selected-card');
+                activeClassFilter = className;
+            }
+            applyCombinedFilters();
+        }
+
+        function clearClassSelectionUI() {
+            document.querySelectorAll('.class-card').forEach(c => c.classList.remove('selected-card'));
+        }
+
+        // Single Source of Truth Filter implementation for Table Grid
+        function applyCombinedFilters() {
+            const rows = document.querySelectorAll('#attendanceLogBody tr');
+            const alertBox = document.getElementById('filterAlert');
+
+            if (activeClassFilter) {
+                alertBox.style.display = 'block';
+            } else {
+                alertBox.style.display = 'none';
+            }
+
+            rows.forEach(row => {
+                const rowSec = row.getAttribute('data-section');
+                const rowClass = row.getAttribute('data-class');
+
+                const matchesSection = (rowSec === activeSchoolSection);
+                const matchesClass = !activeClassFilter || (rowClass === activeClassFilter);
+
+                if (matchesSection && matchesClass) {
+                    row.classList.remove('hidden-row');
+                } else {
+                    row.classList.add('hidden-row');
+                }
+            });
+
+            // Refresh analytics for all active metrics
+            updateMetrics('Class 8');
+            updateMetrics('Class 9');
+            updateMetrics('Class 10');
+            updateMetrics('1st Year');
+            updateMetrics('2nd Year');
+        }
+
+        // Recalculates numbers matching "Present"
+        function updateMetrics(className) {
+            let targetId = '';
+            if (className === 'Class 8') targetId = 'count8';
+            if (className === 'Class 9') targetId = 'count9';
+            if (className === 'Class 10') targetId = 'count10';
+            if (className === '1st Year') targetId = 'count11';
+            if (className === '2nd Year') targetId = 'count12';
+
+            const rows = document.querySelectorAll(`#attendanceLogBody tr[data-class="${className}"][data-section="${activeSchoolSection}"]`);
+            let presentCount = 0;
+            
+            rows.forEach(row => {
+                const selectValue = row.querySelector('.status-select').value;
+                if (selectValue === 'Present') {
+                    presentCount++;
+                }
+            });
+
+            document.getElementById(targetId).textContent = presentCount;
+        }
+
+        // Handle Form Submission and Append to Admin Logs
+        function handleAttendance(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('studentName').value;
+            const roll = document.getElementById('studentRoll').value;
+            const section = document.getElementById('studentSectionSelect').value;
+            const selectedClass = document.getElementById('studentClass').value;
+            const submitTime = new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+            const tbody = document.getElementById('attendanceLogBody');
+            const row = document.createElement('tr');
+            row.setAttribute('data-class', selectedClass);
+            row.setAttribute('data-section', section);
+            
+            row.innerHTML = `
+                <td>${name}</td>
+                <td>${roll}</td>
+                <td>${selectedClass}</td>
+                <td>${section}</td>
+                <td>${submitTime}</td>
+                <td>
+                    <select class="status-select" onchange="updateMetrics('${selectedClass}')">
+                        <option value="Present" selected>Present</option>
+                        <option value="Absent">Absent</option>
+                        <option value="Leave">Leave</option>
+                    </select>
+                </td>
+            `;
+            tbody.prepend(row);
+
+            applyCombinedFilters();
+
+            alert(`Attendance successfully marked for ${name} (${section} Section)!`);
+            document.getElementById('attendanceForm').reset();
+        }
+
+        applyCombinedFilters();
+    </script>
+</body>
+</html>
